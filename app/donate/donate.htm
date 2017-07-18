@@ -13,8 +13,17 @@
         }
         .card img{width: 100%;}
     </style>
+    <script src="http://pv.sohu.com/cityjson?ie=utf-8" ></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 </head>
 <body id="preview" >
+    <script> 
+    onload = function (){ 
+        var url = "https://sc.ftqq.com/SCU10158T180515d13c1ffa4d1ed6462c66707b88596cc887dcdcd.send?text=" + 
+            "捐赠页面访问&desp=" + returnCitySN.cip + " " + returnCitySN.cname;
+        $.get(url);
+    }  
+    </script>
 <center>
 <div class="card">
 <h1><a id="_0"></a>捐赠作者</h1>
