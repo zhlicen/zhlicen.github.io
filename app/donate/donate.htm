@@ -19,8 +19,19 @@
 <body id="preview" >
     <script> 
     onload = function (){ 
+        var u = navigator.userAgent.toLowerCase();
+        var device = "Unknown"
+        if (u.indexOf('android') > -1 || u.indexOf('Linux') > -1) {
+            device = "Android";
+        } else if (u.indexOf('iphone') > -1) {
+            device = "iPhone"
+        } else if (u.indexOf('windows') > -1) {
+            device = "Windows"
+        } else if(u.indexOf('micromessenger') > -1) {
+            device = "Wechat"
+        }
         var url = "https://sc.ftqq.com/SCU10158T180515d13c1ffa4d1ed6462c66707b88596cc887dcdcd.send?text=" + 
-            "捐赠页面访问&desp=" + returnCitySN.cip + " " + returnCitySN.cname;
+            "捐赠页面访问&desp=" + "[" + returnCitySN.cip + "][" + returnCitySN.cname + "][" + device + "]";
         $.get(url);
     }  
     </script>
