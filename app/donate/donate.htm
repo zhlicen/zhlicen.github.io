@@ -1,57 +1,82 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><title>Donate</title>
-<style type="text/css">
-        .card{width:600px;box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);text-align: center;
-		padding: 30px; margin: 10px}
-        .header{
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Donate</title>
+    <style type="text/css">
+        .card {
+            width: 600px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            text-align: center;
+            padding: 30px;
+            margin: 10px
+        }
+
+        .header {
             background-color: #4caf50;
             color: #fff;
             padding: 10px;
             font-size: 40px;
         }
-        .body{
+
+        .body {
             padding: 10px;
         }
-        .card img{width: 100%;}
+
+        .card img {
+            width: 100%;
+        }
     </style>
-    <script src="https://pv.sohu.com/cityjson?ie=utf-8" ></script>
+    <script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
-<body id="preview" >
-    <script> 
-    onload = function (){ 
-        var u = navigator.userAgent.toLowerCase();
-        var device = "Unknown"
-        if (u.indexOf('android') > -1 || u.indexOf('Linux') > -1) {
-            device = "Android";
-        } else if (u.indexOf('iphone') > -1) {
-            device = "iPhone"
-        } else if (u.indexOf('windows') > -1) {
-            device = "Windows"
-        } else if(u.indexOf('micromessenger') > -1) {
-            device = "Wechat"
-        }
-        var url = "https://sc.ftqq.com/SCU10158T180515d13c1ffa4d1ed6462c66707b88596cc887dcdcd.send?text=" + 
-            "捐赠页面访问&desp=" + "[" + returnCitySN.cip + "][" + returnCitySN.cname + "][" + device + "]";
-        $.get(url);
-    }  
-    </script>
-<center>
-<div class="card">
-<h1><a id="_0"></a>捐赠作者</h1>
-<h3><a id="_1"></a>付款时请备注自己的邮箱和捐赠的软件，谢谢！</h3>
-<p>
-	
-	<a href="https://qr.alipay.com/FKX06251THNY6PSPZNA776">
-		<img src="./alipay.png" alt="image">
-	</a>
-	支付宝扫一扫（或点击二维码打开）
-</p>
-<p>
-	
-	<img src="./wechat.png" alt="image">
-	微信扫一扫
-</p>
 
-</div>
-</center>
-</body></html>
+<body id="preview">
+    <script>
+        onload = function () {
+            var u = navigator.userAgent.toLowerCase();
+            var device = "Unknown"
+            if (u.indexOf('android') > -1 || u.indexOf('Linux') > -1) {
+                device = "Android";
+            } else if (u.indexOf('iphone') > -1) {
+                device = "iPhone"
+            } else if (u.indexOf('windows') > -1) {
+                device = "Windows"
+            } else if (u.indexOf('micromessenger') > -1) {
+                device = "Wechat"
+            }
+            var url = "https://sc.ftqq.com/SCU10158T180515d13c1ffa4d1ed6462c66707b88596cc887dcdcd.send?text=" +
+                "捐赠页面访问&desp=" + "[" + returnCitySN.cip + "][" + returnCitySN.cname + "][" + device + "]";
+            $.get(url);
+        }
+
+    </script>
+    <script>
+        onunload = function () {
+            
+            var url = "https://sc.ftqq.com/SCU10158T180515d13c1ffa4d1ed6462c66707b88596cc887dcdcd.send?text=" +
+                "离开页面&desp=" + "[" + returnCitySN.cip + "][" + returnCitySN.cname + "]";
+            $.get(url);
+        }
+    </script>
+    <center>
+        <div class="card">
+            <h1><a id="_0"></a>捐赠作者</h1>
+            <h3><a id="_1"></a>付款时请备注自己的邮箱和捐赠的软件，谢谢！</h3>
+            <p>
+
+                <a href="https://qr.alipay.com/FKX06251THNY6PSPZNA776">
+		<img src="./alipay.png" alt="image">
+	</a> 支付宝扫一扫（或点击二维码打开）
+            </p>
+            <p>
+
+                <img src="./wechat.png" alt="image"> 微信扫一扫
+            </p>
+
+        </div>
+    </center>
+</body>
+
+</html>
