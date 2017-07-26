@@ -27,8 +27,8 @@
         .card img {
             width: 100%;
         }
-</style>
- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/css/materialize.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/js/materialize.js"></script>
@@ -41,22 +41,22 @@
     <script>
         function notifyDeveloper() {
             var email = document.getElementById("email").value
-            if(email == "") {
+            if (email == "") {
                 alert("请输入邮箱");
                 return;
             }
             var account = document.getElementById("account").value
-            if(account == "") {
+            if (account == "") {
                 alert("请输入支付宝/微信账号");
                 return;
             }
             var donate = document.getElementById("donate").value
-            if(donate == "") {
+            if (donate == "") {
                 alert("请输入捐赠金额");
                 return;
             }
             var url = "https://sc.ftqq.com/SCU10158T180515d13c1ffa4d1ed6462c66707b88596cc887dcdcd.send?text=" +
-                "捐赠提醒&desp=" + "email:" + email + ",账户:" + account + ",捐赠了 " + donate + " 元";
+                "捐赠提醒&desp=" + "ip:" + returnCitySN.cip + ",mail:" + email + ",账户:" + account + ",捐赠了 " + donate + " 元";
             $.get(url);
             // alert("提交成功");
             var form = document.getElementById("form")
@@ -79,7 +79,7 @@
                             <label class="white-text" for="email">您的邮箱</label>
                         </div>
                     </div>
-                    <div class="row">                 
+                    <div class="row">
                         <div class="input-field col s12">
                             <input id="account" type="text" class="validate white-text">
                             <label class="white-text" for="email">支付宝/微信账号</label>
@@ -100,9 +100,9 @@
 
 
         </div>
-    <div id="result" hidden="true" class="card green">
-        <span class="card-title white-text">提交成功！</span>
-    </div>
+        <div id="result" hidden="true" class="card green">
+            <span class="card-title white-text">提交成功！</span>
+        </div>
     </center>
 </body>
 
