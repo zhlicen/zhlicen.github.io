@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Donate</title>
+    <title>捐赠作者</title>
     <style type="text/css">
         .card {
             width: 600px;
@@ -28,8 +28,12 @@
             width: 100%;
         }
     </style>
-    <script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/js/materialize.min.js"></script>
+    <script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
+
+
 </head>
 
 <body id="preview">
@@ -47,7 +51,7 @@
                 device = "Wechat"
             }
             var url = "https://sc.ftqq.com/SCU10158T180515d13c1ffa4d1ed6462c66707b88596cc887dcdcd.send?text=" +
-                "捐赠页面访问&desp=" + "[" + returnCitySN.cip + "][" + returnCitySN.cname + "][" + device + "]";
+                "离腕响铃&desp=" + "[" + returnCitySN.cip + "][" + returnCitySN.cname + "][" + device + "]";
             $.get(url);
             $(window).on('beforeunload', function () {
                 var url = "https://sc.ftqq.com/SCU10158T180515d13c1ffa4d1ed6462c66707b88596cc887dcdcd.send?text=" +
@@ -60,9 +64,11 @@
     </script>
 
     <center>
-        <div class="card">
-            <h1><a id="_0"></a>捐赠作者</h1>
-            <h3><a id="_1"></a>付款时请备注自己的邮箱和捐赠的软件，谢谢！</h3>
+        <div class="card yellow">
+            <span class="card-title">捐赠作者</span>
+            <p>付款时请备注自己的邮箱和捐赠的软件</p>
+            <a class="waves-effect waves-light btn" target="_blank" href="notify.htm">我已捐赠</a>
+            
             <p>
 
                 <a href="https://qr.alipay.com/FKX06251THNY6PSPZNA776">

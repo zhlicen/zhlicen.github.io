@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>我已捐赠</title>
+    <style type="text/css">
+        .card {
+            width: 600px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            text-align: center;
+            padding: 30px;
+            margin: 10px
+        }
+
+        .header {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px;
+            font-size: 40px;
+        }
+
+        .body {
+            padding: 10px;
+        }
+
+        .card img {
+            width: 100%;
+        }
+</style>
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/css/materialize.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/js/materialize.js"></script>
+    <script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
+
+
+</head>
+
+<body id="preview">
+    <script>
+        function notifyDeveloper() {
+            var email = document.getElementById("email").value
+            if(email == "") {
+                alert("请输入邮箱");
+                return;
+            }
+            var account = document.getElementById("account").value
+            if(account == "") {
+                alert("请输入支付宝/微信账号");
+                return;
+            }
+            var donate = document.getElementById("donate").value
+            if(donate == "") {
+                alert("请输入捐赠金额");
+                return;
+            }
+            var url = "https://sc.ftqq.com/SCU10158T180515d13c1ffa4d1ed6462c66707b88596cc887dcdcd.send?text=" +
+                "捐赠提醒&desp=" + "email:" + email + ",账户:" + account + ",捐赠了 " + donate + " 元";
+            $.get(url);
+            // alert("提交成功");
+            var form = document.getElementById("form")
+            var result = document.getElementById("result")
+            form.hidden = true;
+            result.hidden = false;
+            return false;
+        }
+    </script>
+    <center>
+        <div id="form" class="card green">
+            <span class="card-title white-text">感谢捐赠</span>
+            <div class="row">
+
+                <form class="col s12">
+
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="email" type="email" class="validate white-text">
+                            <label class="white-text" for="email">您的邮箱</label>
+                        </div>
+                    </div>
+                    <div class="row">                 
+                        <div class="input-field col s12">
+                            <input id="account" type="text" class="validate white-text">
+                            <label class="white-text" for="email">支付宝/微信账号</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="donate" type="text" class="validate white-text">
+                            <label class="white-text" for="sum">捐赠金额</label>
+                        </div>
+                    </div>
+            </div>
+            <button class="waves-effect waves-light btn" onclick="return notifyDeveloper();">提交</button>
+
+            </form>
+        </div>
+
+
+        </div>
+    <div id="result" hidden="true" class="card green">
+        <span class="card-title white-text">提交成功！</span>
+    </div>
+    </center>
+</body>
+
+</html>
