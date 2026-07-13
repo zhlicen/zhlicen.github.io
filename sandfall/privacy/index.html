@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SandFall Privacy Policy</title>
+    <meta
+      name="description"
+      content="Privacy Policy for SandFall, the falling sand puzzle game for iPhone."
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0e1116;
+        --panel: #161b24;
+        --panel-2: #1b2230;
+        --text: #f2f5f9;
+        --muted: #9aa4b2;
+        --accent: #5eead4;
+        --border: rgba(255, 255, 255, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(94, 234, 212, 0.12), transparent 28%),
+          radial-gradient(circle at top right, rgba(34, 211, 238, 0.14), transparent 22%),
+          var(--bg);
+        color: var(--text);
+        line-height: 1.65;
+      }
+
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 40px 20px 80px;
+      }
+
+      .card {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 28px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+      }
+
+      h1, h2 {
+        margin: 0 0 12px;
+        line-height: 1.2;
+      }
+
+      h1 {
+        font-size: clamp(32px, 6vw, 48px);
+      }
+
+      h2 {
+        margin-top: 28px;
+        font-size: 20px;
+      }
+
+      p, li {
+        color: var(--muted);
+        font-size: 16px;
+      }
+
+      ul {
+        padding-left: 20px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+
+      .app {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(180deg, #143b4c, #0e1116);
+        border: 1px solid var(--border);
+        display: grid;
+        place-items: center;
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .lang-switch {
+        display: inline-flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .lang-switch button {
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        border-radius: 999px;
+        padding: 10px 14px;
+        cursor: pointer;
+      }
+
+      .lang-switch button.active {
+        background: var(--accent);
+        color: #081015;
+        border-color: transparent;
+        font-weight: 600;
+      }
+
+      .meta {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .section {
+        border-top: 1px solid var(--border);
+        margin-top: 24px;
+        padding-top: 24px;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      @media (max-width: 640px) {
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="card">
+        <div class="topbar">
+          <div class="app">
+            <div class="logo">SF</div>
+            <div>
+              <div id="appName" style="font-size: 18px; font-weight: 700;">SandFall</div>
+              <div id="appTagline" class="meta">Falling Sand Puzzle</div>
+            </div>
+          </div>
+          <div class="lang-switch" aria-label="Language switcher">
+            <button data-lang="en">English</button>
+            <button data-lang="zh-Hans">简体中文</button>
+            <button data-lang="zh-Hant">繁體中文</button>
+          </div>
+        </div>
+
+        <h1 id="title">Privacy Policy</h1>
+        <p id="intro"></p>
+        <div class="meta" id="effectiveDate"></div>
+
+        <section class="section">
+          <h2 id="dataHeading"></h2>
+          <p id="dataBody"></p>
+          <ul id="dataList"></ul>
+        </section>
+
+        <section class="section">
+          <h2 id="trackingHeading"></h2>
+          <p id="trackingBody"></p>
+        </section>
+
+        <section class="section">
+          <h2 id="servicesHeading"></h2>
+          <p id="servicesBody"></p>
+          <ul id="servicesList"></ul>
+        </section>
+
+        <section class="section">
+          <h2 id="retentionHeading"></h2>
+          <p id="retentionBody"></p>
+        </section>
+
+        <section class="section">
+          <h2 id="childrenHeading"></h2>
+          <p id="childrenBody"></p>
+        </section>
+
+        <section class="section">
+          <h2 id="changesHeading"></h2>
+          <p id="changesBody"></p>
+        </section>
+
+        <section class="section">
+          <h2 id="contactHeading"></h2>
+          <p id="contactBody"></p>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const content = {
+        en: {
+          pageTitle: "SandFall Privacy Policy",
+          title: "Privacy Policy",
+          intro:
+            "This Privacy Policy explains how SandFall handles information when you use the app on iPhone.",
+          effectiveDate: "Effective date: July 12, 2026",
+          dataHeading: "What SandFall stores",
+          dataBody:
+            "SandFall is designed to minimize data collection. Core gameplay works without creating an account.",
+          dataList: [
+            "Gameplay progress and settings are stored locally on your device using Apple system storage.",
+            "Optional local data may include high scores, recent match history, theme selection, sound settings, and an interrupted-game snapshot used for resume.",
+            "SandFall does not run its own analytics, advertising SDKs, or third-party tracking SDKs."
+          ],
+          trackingHeading: "Tracking and advertising",
+          trackingBody:
+            "SandFall does not track you across apps or websites, does not sell personal data, and does not serve third-party ads.",
+          servicesHeading: "Apple services used by the app",
+          servicesBody:
+            "SandFall can optionally use Apple platform services. These services are governed by Apple's own terms and privacy practices.",
+          servicesList: [
+            "Game Center: used only if you choose to use Apple's leaderboard features.",
+            "StoreKit: used only for Apple-managed in-app purchases or restore purchases."
+          ],
+          retentionHeading: "Data retention",
+          retentionBody:
+            "Locally stored gameplay data remains on your device until you delete the app or clear that data through future in-app reset flows, if provided.",
+          childrenHeading: "Children's privacy",
+          childrenBody:
+            "SandFall does not knowingly collect personal information from children through its own servers because the app does not operate its own data collection backend.",
+          changesHeading: "Changes to this policy",
+          changesBody:
+            "If this policy changes, the updated version will be posted at this URL with a revised effective date.",
+          contactHeading: "Contact",
+          contactBody:
+            "For privacy questions about SandFall, please use the support contact listed on the app's App Store product page."
+        },
+        "zh-Hans": {
+          pageTitle: "SandFall 隐私政策",
+          title: "隐私政策",
+          intro:
+            "本隐私政策说明 SandFall 在你于 iPhone 上使用本应用时，如何处理相关信息。",
+          effectiveDate: "生效日期：2026 年 7 月 12 日",
+          dataHeading: "SandFall 会存储什么",
+          dataBody:
+            "SandFall 以尽量少收集数据为原则设计。核心玩法无需注册账号即可使用。",
+          dataList: [
+            "游戏进度和设置会通过 Apple 系统提供的本地存储保存在你的设备上。",
+            "可选的本地数据可能包括最高分、最近对局记录、主题选择、声音设置，以及用于恢复中断对局的快照。",
+            "SandFall 不集成自有分析、广告 SDK，也不接入第三方跟踪 SDK。"
+          ],
+          trackingHeading: "跟踪与广告",
+          trackingBody:
+            "SandFall 不会跨 App 或网站跟踪你，不会出售个人数据，也不会展示第三方广告。",
+          servicesHeading: "应用使用的 Apple 服务",
+          servicesBody:
+            "SandFall 可选使用 Apple 平台服务。此类服务受 Apple 自身条款和隐私政策约束。",
+          servicesList: [
+            "Game Center：仅在你选择使用 Apple 排行榜功能时使用。",
+            "StoreKit：仅在发生 Apple 管理的应用内购买或恢复购买时使用。"
+          ],
+          retentionHeading: "数据保留",
+          retentionBody:
+            "本地保存的游戏数据会保留在你的设备上，直到你删除应用，或通过未来应用内提供的数据重置功能清除它们。",
+          childrenHeading: "儿童隐私",
+          childrenBody:
+            "SandFall 不会通过自有服务器主动收集儿童个人信息，因为本应用没有自建的数据采集后端。",
+          changesHeading: "政策更新",
+          changesBody:
+            "如果本政策发生变化，更新后的版本会发布在当前地址，并同步更新生效日期。",
+          contactHeading: "联系方式",
+          contactBody:
+            "如果你对 SandFall 的隐私问题有疑问，请使用应用 App Store 产品页上列出的支持联系方式。"
+        },
+        "zh-Hant": {
+          pageTitle: "SandFall 隱私權政策",
+          title: "隱私權政策",
+          intro:
+            "本隱私權政策說明 SandFall 在你於 iPhone 上使用本應用程式時，如何處理相關資訊。",
+          effectiveDate: "生效日期：2026 年 7 月 12 日",
+          dataHeading: "SandFall 會儲存什麼",
+          dataBody:
+            "SandFall 以盡量少收集資料為原則設計。核心玩法無需註冊帳號即可使用。",
+          dataList: [
+            "遊戲進度與設定會透過 Apple 系統提供的本機儲存保存於你的裝置上。",
+            "可選的本機資料可能包括最高分、最近對局紀錄、主題選擇、聲音設定，以及用於恢復中斷對局的快照。",
+            "SandFall 不整合自有分析、廣告 SDK，也不接入第三方追蹤 SDK。"
+          ],
+          trackingHeading: "追蹤與廣告",
+          trackingBody:
+            "SandFall 不會跨 App 或網站追蹤你，不會出售個人資料，也不會顯示第三方廣告。",
+          servicesHeading: "應用程式使用的 Apple 服務",
+          servicesBody:
+            "SandFall 可選使用 Apple 平台服務。此類服務受 Apple 自身條款與隱私實務約束。",
+          servicesList: [
+            "Game Center：僅在你選擇使用 Apple 排行榜功能時使用。",
+            "StoreKit：僅在發生 Apple 管理的 App 內購買或恢復購買時使用。"
+          ],
+          retentionHeading: "資料保存",
+          retentionBody:
+            "本機保存的遊戲資料會留在你的裝置上，直到你刪除 App，或透過未來 App 內提供的資料重設功能清除它們。",
+          childrenHeading: "兒童隱私",
+          childrenBody:
+            "SandFall 不會透過自有伺服器主動收集兒童個人資訊，因為本應用程式沒有自建資料蒐集後端。",
+          changesHeading: "政策更新",
+          changesBody:
+            "若本政策發生變更，更新後版本會發布於此網址，並同步更新生效日期。",
+          contactHeading: "聯絡方式",
+          contactBody:
+            "若你對 SandFall 的隱私問題有疑問，請使用 App Store 產品頁上列出的支援聯絡方式。"
+        }
+      };
+
+      function systemLanguage() {
+        const lang = (navigator.language || "en").toLowerCase();
+        if (lang.includes("zh-hant") || lang.includes("zh-tw") || lang.includes("zh-hk")) return "zh-Hant";
+        if (lang.includes("zh")) return "zh-Hans";
+        return "en";
+      }
+
+      function queryLanguage() {
+        const value = new URLSearchParams(window.location.search).get("lang");
+        return value && content[value] ? value : null;
+      }
+
+      function applyLanguage(language) {
+        const copy = content[language];
+        document.documentElement.lang = language === "en" ? "en" : language;
+        document.title = copy.pageTitle;
+        document.getElementById("title").textContent = copy.title;
+        document.getElementById("intro").textContent = copy.intro;
+        document.getElementById("effectiveDate").textContent = copy.effectiveDate;
+        document.getElementById("dataHeading").textContent = copy.dataHeading;
+        document.getElementById("dataBody").textContent = copy.dataBody;
+        document.getElementById("trackingHeading").textContent = copy.trackingHeading;
+        document.getElementById("trackingBody").textContent = copy.trackingBody;
+        document.getElementById("servicesHeading").textContent = copy.servicesHeading;
+        document.getElementById("servicesBody").textContent = copy.servicesBody;
+        document.getElementById("retentionHeading").textContent = copy.retentionHeading;
+        document.getElementById("retentionBody").textContent = copy.retentionBody;
+        document.getElementById("childrenHeading").textContent = copy.childrenHeading;
+        document.getElementById("childrenBody").textContent = copy.childrenBody;
+        document.getElementById("changesHeading").textContent = copy.changesHeading;
+        document.getElementById("changesBody").textContent = copy.changesBody;
+        document.getElementById("contactHeading").textContent = copy.contactHeading;
+        document.getElementById("contactBody").textContent = copy.contactBody;
+
+        const dataList = document.getElementById("dataList");
+        const servicesList = document.getElementById("servicesList");
+        dataList.innerHTML = "";
+        servicesList.innerHTML = "";
+        copy.dataList.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          dataList.appendChild(li);
+        });
+        copy.servicesList.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          servicesList.appendChild(li);
+        });
+
+        document.querySelectorAll("[data-lang]").forEach((button) => {
+          button.classList.toggle("active", button.dataset.lang === language);
+        });
+
+        const url = new URL(window.location.href);
+        url.searchParams.set("lang", language);
+        history.replaceState({}, "", url);
+      }
+
+      const initialLanguage = queryLanguage() || systemLanguage();
+      applyLanguage(initialLanguage);
+
+      document.querySelectorAll("[data-lang]").forEach((button) => {
+        button.addEventListener("click", () => applyLanguage(button.dataset.lang));
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SandFall Support</title>
+    <meta name="description" content="Support for SandFall, the falling sand puzzle game for iPhone." />
+    <style>
+      :root { color-scheme: dark; --bg:#0e1116; --panel:#161b24; --text:#f2f5f9; --muted:#9aa4b2; --accent:#5eead4; --border:rgba(255,255,255,.08); }
+      * { box-sizing: border-box; }
+      body { margin:0; min-height:100vh; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:radial-gradient(circle at top left,rgba(94,234,212,.12),transparent 28%),var(--bg); color:var(--text); line-height:1.65; }
+      main { max-width:760px; margin:0 auto; padding:40px 20px 80px; }
+      .card { background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015)); border:1px solid var(--border); border-radius:24px; padding:28px; box-shadow:0 18px 50px rgba(0,0,0,.24); }
+      .topbar { display:flex; justify-content:space-between; gap:16px; align-items:center; margin-bottom:28px; }
+      .app { display:flex; align-items:center; gap:12px; font-weight:700; }
+      .logo { width:44px; height:44px; display:grid; place-items:center; border-radius:12px; border:1px solid var(--border); background:linear-gradient(180deg,#143b4c,#0e1116); color:var(--accent); }
+      h1,h2 { line-height:1.2; } h1 { margin:0 0 12px; font-size:clamp(32px,6vw,48px); } h2 { margin:30px 0 10px; font-size:20px; }
+      p,li { color:var(--muted); font-size:16px; } ul { padding-left:20px; }
+      .button { display:inline-block; margin:10px 0 6px; padding:14px 20px; border-radius:999px; background:var(--accent); color:#081015; font-weight:700; text-decoration:none; }
+      a { color:var(--accent); } .meta { color:var(--muted); font-size:14px; }
+      .lang-switch { display:flex; flex-wrap:wrap; gap:8px; } .lang-switch button { padding:8px 12px; border-radius:999px; border:1px solid var(--border); background:var(--panel); color:var(--text); cursor:pointer; } .lang-switch button.active { background:var(--accent); border-color:transparent; color:#081015; font-weight:700; }
+      @media (max-width:640px) { .topbar { align-items:flex-start; flex-direction:column; } }
+    </style>
+  </head>
+  <body>
+    <main><div class="card">
+      <div class="topbar"><div class="app"><div class="logo">SF</div><span>SandFall</span></div><div class="lang-switch"><button data-lang="en">English</button><button data-lang="zh-Hans">简体中文</button><button data-lang="zh-Hant">繁體中文</button></div></div>
+      <h1 id="title"></h1><p id="intro"></p>
+      <a class="button" id="issueLink" href="https://github.com/zhlicen/sandfall/issues/new" target="_blank" rel="noopener"></a>
+      <p class="meta" id="issueHint"></p>
+      <h2 id="helpHeading"></h2><ul id="helpList"></ul>
+      <h2 id="privacyHeading"></h2><p id="privacyBody"></p>
+    </div></main>
+    <script>
+      const strings = {
+        en:{title:"SandFall Support",intro:"Need help with SandFall? Report a bug, share feedback, or ask a question and we will review it.",issue:"Contact support on GitHub",hint:"Please include your iPhone model, iOS version, and steps to reproduce any issue.",helpHeading:"Before contacting support",help:["Update SandFall to the latest version.","For a gameplay problem, include a screenshot or short screen recording if possible.","Do not include passwords, payment information, or other sensitive data."],privacyHeading:"Privacy",privacy:"Read the <a href=\"../privacy/\">SandFall Privacy Policy</a>."},
+        "zh-Hans":{title:"SandFall 支持",intro:"需要 SandFall 的帮助？你可以报告 Bug、提交反馈或提问，我们会查看处理。",issue:"通过 GitHub 联系支持",hint:"请尽量附上 iPhone 型号、iOS 版本，以及问题复现步骤。",helpHeading:"联系支持前",help:["请先更新到最新版 SandFall。","如果是游戏问题，请尽量附上截图或短录屏。","请不要提交密码、支付信息或其他敏感数据。"],privacyHeading:"隐私",privacy:"查看 <a href=\"../privacy/?lang=zh-Hans\">SandFall 隐私政策</a>。"},
+        "zh-Hant":{title:"SandFall 支援",intro:"需要 SandFall 的協助？你可以回報 Bug、提供意見或提出問題，我們會查看處理。",issue:"透過 GitHub 聯絡支援",hint:"請盡量附上 iPhone 型號、iOS 版本，以及問題重現步驟。",helpHeading:"聯絡支援前",help:["請先更新到最新版 SandFall。","若是遊戲問題，請盡量附上截圖或短錄影。","請不要提交密碼、付款資訊或其他敏感資料。"],privacyHeading:"隱私",privacy:"查看 <a href=\"../privacy/?lang=zh-Hant\">SandFall 隱私權政策</a>。"}
+      };
+      const query = new URLSearchParams(location.search); const preferred = query.get("lang") || (navigator.language.startsWith("zh-Hant") || navigator.language.startsWith("zh-TW") || navigator.language.startsWith("zh-HK") ? "zh-Hant" : navigator.language.startsWith("zh") ? "zh-Hans" : "en");
+      function render(lang) { const s=strings[lang]||strings.en; document.documentElement.lang=lang; document.title=s.title; title.textContent=s.title; intro.textContent=s.intro; issueLink.textContent=s.issue; issueHint.textContent=s.hint; helpHeading.textContent=s.helpHeading; helpList.replaceChildren(...s.help.map(x=>{const li=document.createElement("li");li.textContent=x;return li})); privacyHeading.textContent=s.privacyHeading; privacyBody.innerHTML=s.privacy; document.querySelectorAll("[data-lang]").forEach(b=>b.classList.toggle("active",b.dataset.lang===lang)); history.replaceState(null,"",`${location.pathname}?lang=${lang}`); }
+      document.querySelectorAll("[data-lang]").forEach(b=>b.addEventListener("click",()=>render(b.dataset.lang))); render(preferred);
+    </script>
+  </body>
+</html>
