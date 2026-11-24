@@ -1,4 +1,4 @@
-/* 牛牛跨栏 1.0.1 —— 音效。全部用 Web Audio 现场合成，包里不带音频文件。
+/* 牛牛跨栏 1.0.2 —— 音效。全部用 Web Audio 现场合成，包里不带音频文件。
    默认关闭；用户点了“音效”按钮、并且做了操作之后才会创建音频（浏览器要求声音必须由用户的操作触发）。 */
 var NainiuAudio = (function () {
   'use strict';
@@ -135,18 +135,48 @@ var NainiuAudio = (function () {
     tone(ac, dest, t, 'sine', 1318, 1318, 0.3, 0.22);
     tone(ac, dest, t + 0.1, 'sine', 1760, 1760, 0.45, 0.22);
   }
-  // 摔倒惨叫：一声往下滑的尖啸，加上闷响和一阵尘土
+  // 摔倒：一段三折的卡通音 —— 先“啪叽”一声闷响带起尘土，接着一声滑稽的滑哨抖着往下掉，
+  // 最后是泄了气的小号“哇——哇——哇———”，一个音比一个音低
   function sfxCrash(ac, dest, buf, t) {
-    tone(ac, dest, t, 'sine', 150, 42, 0.3, 0.8, 0.5);
-    noise(ac, dest, buf, t, 0.32, 0.5, 'lowpass', 420);
-    var o = tone(ac, dest, t + 0.06, 'square', 900, 190, 0.55, 0.16, 0.85);
+    tone(ac, dest, t, 'sine', 170, 40, 0.22, 0.9, 0.4);                        // 闷响
+    noise(ac, dest, buf, t, 0.18, 0.5, 'lowpass', 900);                         // 啪叽
+    noise(ac, dest, buf, t + 0.02, 0.3, 0.25, 'bandpass', 300, 1.5);
+    var w = tone(ac, dest, t + 0.08, 'sine', 1500, 380, 0.6, 0.22);             // 滑哨
     var lfo = ac.createOscillator(), lg = ac.createGain();
-    lfo.frequency.value = 9;
-    lg.gain.value = 45;
+    lfo.frequency.value = 11;
+    lg.gain.value = 60;
     lfo.connect(lg);
-    lg.connect(o.detune);
-    lfo.start(t + 0.06);
-    lfo.stop(t + 0.62);
+    lg.connect(w.frequency);
+    lfo.start(t + 0.08);
+    lfo.stop(t + 0.7);
+    var notes = [233, 220, 196, 165], at = t + 0.62;
+    notes.forEach(function (f, i) {
+      var last = i === notes.length - 1, dur = last ? 0.9 : 0.26;
+      var o = ac.createOscillator(), lp = ac.createBiquadFilter(), g = ac.createGain();
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(f, at);
+      if (last) o.frequency.linearRampToValueAtTime(f * 0.9, at + dur);       // 最后一个音越拖越低
+      lp.type = 'lowpass';
+      lp.frequency.value = 1100;
+      lp.Q.value = 2;
+      g.gain.setValueAtTime(0.0001, at);
+      g.gain.linearRampToValueAtTime(0.36, at + 0.04);
+      g.gain.setValueAtTime(0.36, at + dur - 0.08);
+      g.gain.linearRampToValueAtTime(0.0001, at + dur);
+      o.connect(lp);
+      lp.connect(g);
+      g.connect(dest);
+      var v = ac.createOscillator(), vg = ac.createGain();                      // “哇哇”的颤动
+      v.frequency.value = 7;
+      vg.gain.value = 5;
+      v.connect(vg);
+      vg.connect(o.frequency);
+      o.start(at);
+      o.stop(at + dur + 0.02);
+      v.start(at);
+      v.stop(at + dur);
+      at += dur + 0.04;
+    });
   }
   var SFX = { jump: sfxJump, moo: sfxMoo, cheer: sfxCheer, perfect: sfxPerfect, crash: sfxCrash };
 
@@ -237,7 +267,7 @@ var NainiuAudio = (function () {
     renderOffline: function (name) {
       var OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
       if (!OAC) return Promise.reject(new Error('当前环境不支持 OfflineAudioContext'));
-      var sec = name === 'music' ? STEP * 64 + 0.3 : 2;
+      var sec = name === 'music' ? STEP * 64 + 0.3 : 3;      // 摔倒那段约两秒半，其余都短
       var ac = new OAC(1, Math.ceil(sec * 44100), 44100), buf = makeNoise(ac);
       var bus = ac.createGain();
       bus.gain.value = VOL.master * (name === 'music' ? VOL.music : VOL.sfx);

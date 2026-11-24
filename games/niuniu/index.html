@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- 牛牛跨栏 · 小红书小工具 · 1.0.1（这一版加了音效，默认关闭） -->
+<!-- 牛牛跨栏 · 小红书小工具 · 1.0.2（音效默认关闭；这一版精简了界面） -->
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
-<meta name="version" content="1.0.1" />
+<meta name="version" content="1.0.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>牛牛跨栏</title>
 <style>
@@ -62,7 +62,7 @@
     margin-left: calc(var(--w, 8px) * 0.5); padding: 0 calc(var(--w, 8px) * 0.15) 0 calc(var(--w, 8px) * 0.7); border-radius: 999px;
     background: #e0524d; color: #fff; font-size: 0.7em; vertical-align: 0.15em;
   }
-  .hud-score { font-size: var(--fs-score, 18px); text-align: center; }
+  .hud-score { font-size: var(--fs-score, 18px); text-align: center; padding: var(--hud-pad-v, 8px) calc(var(--hud-pad-h, 14px) * 1.4); }
   .hud-score b { margin: 0 0.15em; color: #e0524d; font-size: 1.35em; }
   .hud-score small { display: block; margin-top: 0.15em; font-size: 0.62em; font-weight: 500; opacity: .75; }
   .hud-hint { font-weight: 500; font-size: var(--fs-hint, 12px); opacity: .88; }
@@ -70,21 +70,24 @@
   .hud-title, .hud-hint { left: var(--pad-l, 8px); }
   .hud-title { top: var(--pad-t, 8px); }
   .hud-hint { bottom: var(--pad-b, 8px); }
-  /* 右上角：音效开关 + 得分 */
+  /* 右上角：得分（大数字 + 跨栏数） */
   .hud-tr {
     position: absolute;
     top: var(--pad-t, 8px);
     right: var(--pad-r, 8px);
-    display: flex;
-    align-items: center;
     pointer-events: none;
     z-index: 2;
   }
   .hud-tr .hud { position: static; }
-  /* 音效开关：默认关闭。不用 gap，间距靠右外边距 */
+  .hud-score b { display: block; margin: 0; color: #e0524d; font-size: 2em; line-height: 1.05; }
+  .hud-score small { margin-top: 0.2em; }
+  /* 音效开关：右下角，默认关闭 */
   .snd-btn {
     pointer-events: auto;
-    margin-right: calc(var(--w, 8px) * 1.2);
+    position: absolute;
+    right: var(--pad-r, 8px);
+    bottom: var(--pad-b, 8px);
+    z-index: 2;
     padding: var(--hud-pad-v, 8px) var(--hud-pad-h, 14px);
     border: 0; border-radius: 999px;
     display: flex; align-items: center;
@@ -128,11 +131,16 @@
     box-shadow: 0 calc(var(--w, 8px)) calc(var(--w, 8px) * 3) rgba(0, 0, 0, .22);
   }
   .ov-title { font-size: var(--fs-ov-title, 30px); font-weight: 800; letter-spacing: 0.04em; }
-  .ov-text { margin-top: 0.5em; font-size: var(--fs-ov-text, 15px); line-height: 1.6; }
+  .ov-title.num { font-size: var(--fs-ov-num, 56px); line-height: 1.05; letter-spacing: 0; color: #e0524d; }   /* 结算时标题位放得分 */
+  .ov-text { margin-top: 0.4em; font-size: var(--fs-ov-text, 15px); line-height: 1.6; }
   .ov-text b { color: #e0524d; font-size: 1.25em; }
+  .ov-text small { display: block; margin-top: 0.2em; font-size: 0.78em; opacity: .6; }
+  /* 面板里的主按钮：开始 / 再来一局 */
   .ov-hint {
-    margin-top: 0.8em; font-size: var(--fs-ov-hint, 15px); font-weight: 700; color: #2f6fd6;
-    animation: pulse 1.4s ease-in-out infinite;
+    display: inline-block;
+    margin-top: 0.9em; padding: 0.55em 2.2em; border-radius: 999px;
+    font-size: var(--fs-ov-hint, 15px); font-weight: 700; color: #fff; background: #2f6fd6;
+    animation: pulse 1.6s ease-in-out infinite;
   }
   kbd { padding: 0.1em 0.5em; border-radius: 0.4em; background: #eef3f8; border: 1px solid #c9d5df; border-bottom-width: 2px; font-family: inherit; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
@@ -158,22 +166,22 @@
 <div class="stage" id="stage">
   <div class="hud hud-title">牛牛跨栏<span>3D</span></div>
   <div class="hud-tr">
-    <button class="snd-btn" id="sndBtn" type="button" aria-pressed="false" aria-label="音效：关">
-      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M11 5L6 9H2v6h4l5 4z" />
-        <g class="on"><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14" /></g>
-        <g class="off"><path d="M16 9l5 6M21 9l-5 6" /></g>
-      </svg><span id="sndText">音效 关</span>
-    </button>
-    <div class="hud hud-score">得分<b id="score">0</b><small>跨栏 <span id="count">0</span> · 速度 <span id="speed">5.0</span> m/s</small></div>
+    <div class="hud hud-score"><b id="score">0</b><small>跨栏 <span id="count">0</span></small></div>
   </div>
-  <div class="hud hud-hint" id="hint">点按屏幕 跳跃 · 双指拖动 旋转视角 · 双指张合 缩放</div>
+  <div class="hud hud-hint" id="hint">点按跳跃</div>
+  <button class="snd-btn" id="sndBtn" type="button" aria-pressed="false" aria-label="音效：关">
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 5L6 9H2v6h4l5 4z" />
+      <g class="on"><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14" /></g>
+      <g class="off"><path d="M16 9l5 6M21 9l-5 6" /></g>
+    </svg><span id="sndText">音效 关</span>
+  </button>
   <div class="popup" id="popup"></div>
   <div class="overlay" id="overlay">
     <div class="panel">
       <div class="ov-title" id="ovTitle">牛牛跨栏</div>
-      <div class="ov-text" id="ovText">看准时机起跳，跨过栏架；撞栏就结束，速度会越来越快。</div>
-      <div class="ov-hint" id="ovHint">点按屏幕 开始</div>
+      <div class="ov-text" id="ovText">跳过栏架，别撞上</div>
+      <div class="ov-hint" id="ovHint">开始</div>
     </div>
   </div>
   <div class="flash" id="flash"></div>

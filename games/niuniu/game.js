@@ -1,5 +1,5 @@
 
-/* 牛牛跨栏 · 小红书小工具版 1.0.1（这一版加了音效，默认关闭） */
+/* 牛牛跨栏 · 小红书小工具版 1.0.2（音效默认关闭；这一版精简了界面） */
 (() => {
   function boot() {
   'use strict';
@@ -8,7 +8,6 @@
   const ui = {
     score: document.getElementById('score'),
     count: document.getElementById('count'),
-    speed: document.getElementById('speed'),
     hint: document.getElementById('hint'),
     popup: document.getElementById('popup'),
     overlay: document.getElementById('overlay'),
@@ -829,6 +828,7 @@
       '--fs-popup': u(7, 6, 18, 38),
       '--panel-pad-v': u(3.4, 3, 12, 22), '--panel-pad-h': u(3.4, 3, 16, 26),
       '--fs-ov-title': u(6.5, 7.5, 22, 40), '--fs-ov-text': u(3.8, 3.6, 13, 18), '--fs-ov-hint': u(3.6, 3.4, 13, 17),
+      '--fs-ov-num': u(13, 16, 44, 84),
       '--panel-radius': clamp(2 * w, 12, 22) + 'px',
     };
     for (const k in vars) rootStyle.setProperty(k, vars[k]);
@@ -851,10 +851,7 @@
   }
   applyWindowInfo();
 
-  const TAP = coarse ? '点按屏幕' : '按 <kbd>空格</kbd> 或点击屏幕';
-  ui.hint.textContent = coarse
-    ? '点按 跳跃 · 双指拖动 旋转视角 · 双指张合 缩放'
-    : '空格 / 点击 跳跃 · 拖拽旋转视角 · 滚轮缩放';
+  ui.hint.textContent = coarse ? '点按跳跃' : '空格跳跃';
 
   let state = 'ready';                      // ready（待开始）| playing | crash（摔倒中）| over
   let speed = JOG_SPEED, dist = 0, runDist = 0, time = 0, timeScale = 1, shake = 0;
@@ -977,16 +974,21 @@
     keepScreenOn(false);
     const isNew = score > best;
     if (isNew) { best = score; saveBest(best); }
-    ui.ovTitle.textContent = isNew ? '新纪录！' : '撞栏啦！';
-    ui.ovText.innerHTML = '得分 <b>' + score + '</b>　跨栏 <b>' + cleared + '</b> 个<br>最高纪录 <b>' + best + '</b>';
-    ui.ovHint.innerHTML = TAP + ' 再来一局';
+    ui.ovTitle.textContent = score;              // 结算：大数字居中
+    ui.ovTitle.classList.add('num');
+    ui.ovText.innerHTML = (isNew ? '<b>新纪录！</b>' : '撞栏啦！') + '　跨栏 ' + cleared + ' 个<br><small>最高纪录 ' + best + '</small>';
+    ui.ovHint.textContent = '再来一局';
     ui.overlay.classList.remove('hide');
   }
 
   function showReady() {
     ui.ovTitle.textContent = '牛牛跨栏';
-    ui.ovText.innerHTML = '看准时机起跳，跨过栏架；撞栏就结束，速度会越来越快。' + (best > 0 ? '<br>最高纪录 <b>' + best + '</b>' : '');
-    ui.ovHint.innerHTML = TAP + ' 开始';
+    ui.ovTitle.classList.remove('num');
+    const tips = [];
+    if (coarse) tips.push('双指拖动可转动视角');
+    if (best > 0) tips.push('最高纪录 ' + best);
+    ui.ovText.innerHTML = '跳过栏架，别撞上' + (tips.length ? '<br><small>' + tips.join(' · ') + '</small>' : '');
+    ui.ovHint.textContent = '开始';
     ui.overlay.classList.remove('hide');
   }
 
@@ -1159,8 +1161,6 @@
   function updateHud() {
     if (hudCache.score !== score) { hudCache.score = score; ui.score.textContent = score; }
     if (hudCache.count !== cleared) { hudCache.count = cleared; ui.count.textContent = cleared; }
-    const sp = speed.toFixed(1);
-    if (hudCache.speed !== sp) { hudCache.speed = sp; ui.speed.textContent = sp; }
   }
 
   // ---------- 相机：按屏幕比例自动取景 ----------
