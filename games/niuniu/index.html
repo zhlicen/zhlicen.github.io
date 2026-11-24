@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<!-- 牛牛跨栏 · 小红书小工具 · 1.0.1（这一版加了音效，默认关闭） -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="version" content="1.0.1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>牛牛跨栏</title>
+<style>
+  /* 样式按 Chrome 61 可用的写法：不用 min() / max() / clamp()、容器查询单位、aspect-ratio、inset。
+     原来写成 clamp(min(Xcqw, Ycqh)) 的字号和内边距，改由 game.js 算好后写进下面的变量（--fs-*、--pad-* 等）；
+     变量还没算出来之前，先用 var() 里的默认值，保证脚本没运行时也有可读的静态首屏。 */
+  :root {
+    --safe-l: 0px;
+    --safe-r: 0px;
+    --safe-t: 0px;
+    --safe-b: 0px;
+  }
+  /* 支持安全区的内核用系统安全区；PC 模拟器会注入 --safe-area-inset-* 变量 */
+  @supports (padding-top: env(safe-area-inset-top, 0px)) {
+    :root {
+      --safe-l: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
+      --safe-r: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
+      --safe-t: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+      --safe-b: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; overflow: hidden; background: #0d1623; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+  /* 舞台铺满容器给的整个窗口（全屏由容器管理，页面只做视觉上的铺满） */
+  .stage {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: #bfe6fb;
+  }
+  .stage canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+  .stage canvas:active { cursor: grabbing; }
+  /* 界面文字 */
+  .hud {
+    position: absolute;
+    padding: var(--hud-pad-v, 8px) var(--hud-pad-h, 14px);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .9);
+    color: #3b2f2f;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .12);
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 2;
+  }
+  .hud-title { font-size: var(--fs-title, 16px); }
+  .hud-title span {
+    margin-left: calc(var(--w, 8px) * 0.5); padding: 0 calc(var(--w, 8px) * 0.15) 0 calc(var(--w, 8px) * 0.7); border-radius: 999px;
+    background: #e0524d; color: #fff; font-size: 0.7em; vertical-align: 0.15em;
+  }
+  .hud-score { font-size: var(--fs-score, 18px); text-align: center; }
+  .hud-score b { margin: 0 0.15em; color: #e0524d; font-size: 1.35em; }
+  .hud-score small { display: block; margin-top: 0.15em; font-size: 0.62em; font-weight: 500; opacity: .75; }
+  .hud-hint { font-weight: 500; font-size: var(--fs-hint, 12px); opacity: .88; }
+  /* 四个角的位置避开刘海、系统手势区域和容器顶部的按钮（--pad-* 由 game.js 算出） */
+  .hud-title, .hud-hint { left: var(--pad-l, 8px); }
+  .hud-title { top: var(--pad-t, 8px); }
+  .hud-hint { bottom: var(--pad-b, 8px); }
+  /* 右上角：音效开关 + 得分 */
+  .hud-tr {
+    position: absolute;
+    top: var(--pad-t, 8px);
+    right: var(--pad-r, 8px);
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .hud-tr .hud { position: static; }
+  /* 音效开关：默认关闭。不用 gap，间距靠右外边距 */
+  .snd-btn {
+    pointer-events: auto;
+    margin-right: calc(var(--w, 8px) * 1.2);
+    padding: var(--hud-pad-v, 8px) var(--hud-pad-h, 14px);
+    border: 0; border-radius: 999px;
+    display: flex; align-items: center;
+    background: rgba(255, 255, 255, .9); color: #6b5f5f;
+    font-family: inherit; font-weight: 700; font-size: var(--fs-hint, 12px); line-height: 1.3;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .12);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+  }
+  .snd-btn svg { width: 1.4em; height: 1.4em; margin-right: 0.4em; }
+  .snd-btn[aria-pressed="true"] { color: #2f6fd6; }
+  .snd-btn .on { display: none; }
+  .snd-btn[aria-pressed="true"] .on { display: inline; }
+  .snd-btn[aria-pressed="true"] .off { display: none; }
+  .popup {
+    position: absolute; left: 50%; top: 30%;
+    transform: translate(-50%, -50%);
+    color: #ff8f1f; font-weight: 800; font-size: var(--fs-popup, 28px);
+    text-shadow: 0 0 calc(var(--w, 8px) * 0.6) #fff, 0 calc(var(--w, 8px) * 0.25) calc(var(--w, 8px) * 0.6) rgba(0, 0, 0, .25);
+    opacity: 0; pointer-events: none; white-space: nowrap;
+    z-index: 3;
+  }
+  /* 开始 / 结算面板：横屏放右下角，不挡左边的奶牛；竖屏放上方 */
+  .overlay {
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+    display: grid; justify-items: end; align-items: end;
+    padding: 0 var(--pad-r, 8px) var(--pad-b, 8px) var(--pad-l, 8px);
+    background: linear-gradient(to top, rgba(13, 30, 48, .42), rgba(13, 30, 48, 0) 60%);
+    pointer-events: none;
+    transition: opacity .3s ease;
+    z-index: 1;
+  }
+  .overlay.hide { opacity: 0; }
+  .panel {
+    max-width: 88%;
+    padding: var(--panel-pad-v, 14px) var(--panel-pad-h, 18px);
+    border-radius: var(--panel-radius, 16px);
+    background: rgba(255, 255, 255, .96);
+    color: #3b2f2f; text-align: center;
+    box-shadow: 0 calc(var(--w, 8px)) calc(var(--w, 8px) * 3) rgba(0, 0, 0, .22);
+  }
+  .ov-title { font-size: var(--fs-ov-title, 30px); font-weight: 800; letter-spacing: 0.04em; }
+  .ov-text { margin-top: 0.5em; font-size: var(--fs-ov-text, 15px); line-height: 1.6; }
+  .ov-text b { color: #e0524d; font-size: 1.25em; }
+  .ov-hint {
+    margin-top: 0.8em; font-size: var(--fs-ov-hint, 15px); font-weight: 700; color: #2f6fd6;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  kbd { padding: 0.1em 0.5em; border-radius: 0.4em; background: #eef3f8; border: 1px solid #c9d5df; border-bottom-width: 2px; font-family: inherit; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+  @media (max-aspect-ratio: 4/5) {
+    .overlay {
+      justify-items: center; align-items: start;
+      padding: calc(var(--h, 8px) * 11 + var(--pad-t, 8px)) 0 0;
+      background: linear-gradient(to bottom, rgba(13, 30, 48, .38), rgba(13, 30, 48, 0) 60%);
+    }
+  }
+  .flash { position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 4; }
+  /* 启动状态 / 出错提示 */
+  .status {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    padding: 12px 26px; border-radius: 999px;
+    background: rgba(255, 255, 255, .94); color: #3b2f2f; font-weight: 700; font-size: 15px;
+    pointer-events: none; white-space: nowrap; z-index: 5;
+  }
+  .status.error { background: #ffe3e1; color: #a3271f; }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="hud hud-title">牛牛跨栏<span>3D</span></div>
+  <div class="hud-tr">
+    <button class="snd-btn" id="sndBtn" type="button" aria-pressed="false" aria-label="音效：关">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 5L6 9H2v6h4l5 4z" />
+        <g class="on"><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14" /></g>
+        <g class="off"><path d="M16 9l5 6M21 9l-5 6" /></g>
+      </svg><span id="sndText">音效 关</span>
+    </button>
+    <div class="hud hud-score">得分<b id="score">0</b><small>跨栏 <span id="count">0</span> · 速度 <span id="speed">5.0</span> m/s</small></div>
+  </div>
+  <div class="hud hud-hint" id="hint">点按屏幕 跳跃 · 双指拖动 旋转视角 · 双指张合 缩放</div>
+  <div class="popup" id="popup"></div>
+  <div class="overlay" id="overlay">
+    <div class="panel">
+      <div class="ov-title" id="ovTitle">牛牛跨栏</div>
+      <div class="ov-text" id="ovText">看准时机起跳，跨过栏架；撞栏就结束，速度会越来越快。</div>
+      <div class="ov-hint" id="ovHint">点按屏幕 开始</div>
+    </div>
+  </div>
+  <div class="flash" id="flash"></div>
+  <div class="status" id="status" role="status">正在准备 3D 场景…若长时间未就绪，请退出后重新打开。</div>
+</div>
+<!-- 经典外置脚本，按顺序加载：three.js（提供 THREE）→ audio.js（提供 NainiuAudio）→ game.js -->
+<script defer src="./three.js"></script>
+<script defer src="./audio.js"></script>
+<script defer src="./game.js"></script>
+</body>
+</html>
